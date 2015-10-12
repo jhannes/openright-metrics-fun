@@ -1,0 +1,61 @@
+<html>
+<head>
+<!-- Load c3.css -->
+<link href="css/c3.css" rel="stylesheet" type="text/css">
+
+<!-- Load d3.js and c3.js -->
+<script src="js/d3.min.js" charset="utf-8"></script>
+<script src="js/c3.js"></script>
+<script src="js/jquery-1.11.3.js"></script>
+</head>
+<body>
+  <h1>Chart</h1>
+
+  <div id="chart"></div>
+
+  <ul id="services"></ul>
+
+  <ul id="jetty"></ul>
+
+  <ul id="jvm"></ul>
+
+  <script>      
+      $.getJSON('data' + location.search, function(result) {
+        var chart = c3.generate({
+          bindto : '#chart',
+          data: result.data,
+          axis: result.axis
+        });
+
+        result.menu.endpoints.forEach(function(endpoint) {
+          var li = $("<li>").text(endpoint);
+          ["timing", "load", "errors"].forEach(function(aspect) {
+            li.append(" ");
+            li.append($("<a>").text("[" + aspect + "]")
+                .attr("href", "?service=" + endpoint + "&aspect=" + aspect));
+          });
+          $("#services").append(li);
+        });
+        
+        result.menu.jetty.forEach(function(jetty) {
+          var li = $("<li>").text(jetty);
+          li.append(" ");
+          li.append($("<a>").text("[show]")
+              .attr("href", "?prefix=" + jetty));
+          $("#jetty").append(li);          
+        });
+
+        result.menu.jvm.forEach(function(jvm) {
+          var li = $("<li>").text(jvm);
+          li.append(" ");
+          li.append($("<a>").text("[show]")
+              .attr("href", "?prefix=" + jvm));
+          $("#jvm").append(li);          
+        });
+        
+        
+      });
+    </script>
+</body>
+
+</html>
